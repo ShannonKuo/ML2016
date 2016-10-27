@@ -1,3 +1,3 @@
 
 #!/bin/bash
-pypy outputTest.py $1 $2 $3
+python outputTest_2.py $1 $2 $3
