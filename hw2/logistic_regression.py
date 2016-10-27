@@ -18,18 +18,18 @@ def calculateAns(data, w_data, spam_data, b, doNotUse, write, valid):
             correct_data += 1.0
 
     if write == 1:
-        file5 = open("train_ans.csv", 'a')
-        if valid == 1:
-            file5.write("valid : ")
-        else :
-            file5.write("train : ")
-        for i in range(len(doNotUse)):
-            file5.write(str(doNotUse[i]) + " ")
-        file5.write('\n')
+        #file5 = open("train_ans.csv", 'a')
+        #if valid == 1:
+        #    file5.write("valid : ")
+        #else :
+        #    file5.write("train : ")
+        #for i in range(len(doNotUse)):
+        #    file5.write(str(doNotUse[i]) + " ")
+        #file5.write('\n')
  
         print  correct_data/len(data)
-        file5.write(str(correct_data/len(data)))
-        file5.write('\n')
+        #file5.write(str(correct_data/len(data)))
+        #file5.write('\n')
 
 
 ###
@@ -46,10 +46,10 @@ for i in range(len(doNotUse)):
     feature[ doNotUse[i] ] = 0
 
 #iteration = 300000
-iteration = 1000000
+iteration = 10000
 v = 0
 line_Id = 0
-adagrad = 0
+adagrad = 1
 mini_batch = 1
 batch = 5
 pos = 0
@@ -57,7 +57,7 @@ validation_start = 3000
 epsilon = 1e-20
 b = -1
 if adagrad == 1 : n0 = 0.01
-else : n0 = 0.0000001
+else : n0 = 0.000001
 
 for line in file.readlines():
 
@@ -101,7 +101,7 @@ for i in range (0, iteration, 1):
         for k in range(0, len(train[0])):
             sig_train[k] += -(spam_train[j] - f) * train[j][k] 
         sig_b += -(spam_train[j] - f) 
-        if i % 100 == 0:
+        if i  == 0:
             likelihood += -((spam_train[j] * math.log(f + epsilon))
                            + ((1.0-spam_train[j]) * math.log(1.0-f+epsilon)))
     if mini_batch == 1 :
@@ -110,9 +110,9 @@ for i in range (0, iteration, 1):
         
     if adagrad == 1:
         for j in range(0, len(train[0])):
-            wsq_train[j] += w_train[j] ** 2
+            wsq_train[j] += sig_train[j] ** 2
         for j in range(0, len(train[0])):
-            n_train[j] = n0 / ((wsq_train[j]) ** 0.5)
+            n_train[j] = n0 / ((wsq_train[j]) ** 0.5 + epsilon)
     for j in range(0, len(train[0])):
         w_train[j] -= n_train[j] * sig_train[j]
     
@@ -122,12 +122,14 @@ for i in range (0, iteration, 1):
         print "doNotUse   : ",doNotUse
         print "iteration  : ",i
         print "likelihood : ",likelihood 
-        #if v == 1:
-        print "valid_ans : ",
-        calculateAns(valid, w_train, spam_valid, b, doNotUse, 0, 1)
-        #else :
-        print "train_ans : ",
-        calculateAns(train, w_train, spam_train, b, doNotUse, 0, 0)
+        """
+        if v == 1:
+           print "valid_ans : ",
+           calculateAns(valid, w_train, spam_valid, b, doNotUse, 0, 1)
+        else :
+           print "train_ans : ",
+           calculateAns(train, w_train, spam_train, b, doNotUse, 0, 0)
+        """
 #######calculate ans
 if v == 1 : 
    print "valid_final_ans : ",
