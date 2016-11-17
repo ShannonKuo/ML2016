@@ -139,13 +139,13 @@ else :
     model.add(Flatten())
     model.add(Dense(512)) 
     model.add(Activation('relu'))
-    model.add(Dropout(0.25))  
+    model.add(Dropout(0.5))  
     model.add(Dense(10))
-    keras.layers.normalization.BatchNormalization(epsilon=1e-06, mode=0, momentum=0.9, weights=None)
+    #keras.layers.normalization.BatchNormalization(epsilon=1e-06, mode=0, momentum=0.9, weights=None)
     model.add(Activation('softmax'))
+    keras.optimizers.Adadelta(lr = 1.0, rho = 0.95, epsilon = 1e-06)
 
-    keras.optimizers.RMSprop(lr=0.001, rho=0.9, epsilon=1e-06)
-    model.compile(loss = 'categorical_crossentropy', optimizer = 'RMSprop', metrics = ['accuracy'])
+    model.compile(loss = 'categorical_crossentropy', optimizer = 'Adadelta', metrics = ['accuracy'])
 
     if not data_augmentation_1:
         print('Not using data augmentation.')
