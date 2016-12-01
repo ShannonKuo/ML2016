@@ -63,7 +63,6 @@ dataset = []
 cnt = 0
 for line in file1.readlines():
    cnt += 1
-   print (cnt)
    porter = stem.porter.PorterStemmer()
    lan = LancasterStemmer()
    lemma = WordNetLemmatizer()
