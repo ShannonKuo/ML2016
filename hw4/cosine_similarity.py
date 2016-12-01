@@ -59,7 +59,9 @@ op.add_option("--verbose",
 opts.n_components = 20
 
 file1 = open(sys.argv[1] + "title_StackOverflow.txt", "r")
+file2 = open(sys.argv[1] + "docs.txt", "r")
 dataset = []
+finaldata = []
 cnt = 0
 for line in file1.readlines():
    cnt += 1
@@ -81,10 +83,36 @@ for line in file1.readlines():
    for i in range(len(line)):
        newline += line[i] + " "
    dataset.append(newline)
+   finaldata.append(newline)
+
+for line in file2.readlines():
+   cnt += 1
+   porter = stem.porter.PorterStemmer()
+   lan = LancasterStemmer()
+   lemma = WordNetLemmatizer()
+
+   line = line.decode('utf-8')
+   line = line.lower()
+   tokenizer = RegexpTokenizer(r'\w+')
+   line = tokenizer.tokenize(line)
+   stop = set(stopwords.words('english')) 
+   line = [i for i in line if i not in stop and len(i) >= 2]
+   
+   line = [porter.stem(j) for j in line ]
+   line = [lan.stem(j) for j in line]
+   line = [lemma.lemmatize(j) for j in line]
+   newline = ""
+   for i in range(len(line)):
+       newline += line[i] + " "
+   dataset.append(newline)
+
+
 vectorizer = TfidfVectorizer(max_df=0.4, max_features=None,
                                  min_df=2, stop_words='english',
                                  use_idf=True)
-X = vectorizer.fit_transform(dataset)
+#X = vectorizer.fit_transform(dataset)
+X = vectorizer.fit(dataset)
+X = vectorizer.transform(finaldata)
 
 
 if opts.n_components:
